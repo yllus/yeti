@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Yeti: A friendly YouTube video playing giant</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="css/bootstrap.css" media="screen">
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="js/html5shiv.js"></script>
+      <script src="js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+  <body>
+    <div class="navbar navbar-default navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <a href="/" class="navbar-brand">Yeti</a>
+          <button class="navbar-toggle" type="button" data-toggle="collapse" data-target="#navbar-main">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+        </div>
+        <div class="navbar-collapse collapse" id="navbar-main">
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="watch.html">Watch</a>
+            </li>
+            <li>
+              <a href="help.html">Help</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="container">
+        <div class="page-header" style="border-bottom: 0;">
+            <div class="row">
+                <div class="col-md-12">
+                    <h1>Yeti</h1>
+                    <p class="lead">
+                        Hi. I'm a friendly YouTube video playing giant. Paste the URL to your favourite YouTube video below and 
+                        I'll play it for everyone tuned in to the <a target="_blank" href="watch.html">Watch</a> screen.
+                    </p>
+
+                    <div class="form-group">
+                        <label class="control-label" for="focusedInput">YouTube Video URL</label>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 100%;">
+                                    <input id="field-url" class="form-control" type="text" value="" placeholder="https://www.youtube.com/watch?v=28tZ-S1LFok">
+                                </td>
+                                <td style="padding-left: 10px;">
+                                    <a id="button-submit" href="javascript:void(0);" class="btn btn-primary">Submit Video</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="bs-component" style="clear: left;">
+                        <div id="wrapper-bar" class="progress progress-striped active" style="display: none;">
+                            <div class="progress-bar" style="width: 0%"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script>
+    $( "#button-submit" ).click(function() {
+        $( "#wrapper-bar" ).fadeIn( "slow", function() {
+            $( ".progress-bar" ).css( "width", "100%" );
+
+            $( "#field-url" ).css( "border-color", "#43ac6a" );
+
+            $( "#wrapper-bar" ).fadeOut( "slow", function() {
+                1;
+            });
+        });
+    });
+    </script>
+  </body>
+</html>
