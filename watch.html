@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="utf-8">
-    <title>Yeti: A friendly YouTube video playing giant</title>
+    <title>Yeti: Watch</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.css" media="screen">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -45,24 +45,8 @@
                         I'll play it for everyone tuned in to the <a target="_blank" href="watch.html">Watch</a> screen.
                     </p>
 
-                    <div class="form-group">
-                        <label class="control-label" for="focusedInput">YouTube Video URL</label>
-                        <table style="width: 100%;">
-                            <tr>
-                                <td style="width: 100%;">
-                                    <input id="field-url" class="form-control" type="text" value="" placeholder="https://www.youtube.com/watch?v=28tZ-S1LFok">
-                                </td>
-                                <td style="padding-left: 10px;">
-                                    <a id="button-submit" href="javascript:void(0);" class="btn btn-primary">Submit Video</a>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <div class="bs-component" style="clear: left;">
-                        <div id="wrapper-bar" class="progress progress-striped active" style="display: none;">
-                            <div class="progress-bar" style="width: 0%"></div>
-                        </div>
+                    <div class="embed-responsive embed-responsive-16by9">
+                      <iframe id="iframe-video" class="embed-responsive-item" src=""></iframe>
                     </div>
                 </div>
             </div>
@@ -73,29 +57,38 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.1.1/firebase.js"></script>
     <script>
-    $( "#button-submit" ).click(function() {
-        if ( $('#field-url').val().length == 0 ) {
-            return;
+    var rootRef = new Firebase("https://radiant-heat-6757.firebaseio.com/");
+    var videoQueueRef = rootRef.child("videoQueue");
+
+    function getUrlParameter( sSearch, sParam ) {
+        sSearch = sSearch.substring(1);
+        var sURLVariables = sSearch.split('&');
+        for (var i = 0; i < sURLVariables.length; i++) 
+        {
+            var sParameterName = sURLVariables[i].split('=');
+            if (sParameterName[0] == sParam) 
+            {
+                return sParameterName[1];
+            }
         }
+    }
 
-        $( "#wrapper-bar" ).fadeIn( "slow", function() {
-            $( ".progress-bar" ).css( "width", "100%" );
+    function parseUrl( url ) {
+        var a = document.createElement('a');
+        a.href = url;
+        return a;
+    }
 
-            // Create a reference to the "videoQueue" object in Firebase.
-            var rootRef = new Firebase("https://radiant-heat-6757.firebaseio.com/");
-            var videoQueueRef = rootRef.child("videoQueue");
+    // If the value of "videoQueue" changes, update the SRC attribute of our IFRAME and start playing the video!
+    videoQueueRef.on('value', function( snapshot ) {
+        // Do some work to get URLs into the format of:
+        //      https://www.youtube.com/embed/zpOULjyy-n8?autoplay=1&controls=0&rel=0
+        var obj_url = parseUrl( snapshot.val() );
+        var str_v = getUrlParameter( obj_url.search, 'v' );
+        var src_url = 'https://www.youtube.com/embed/' + str_v + '?autoplay=1&controls=0&rel=0';
 
-            // Update the value of "videoQueue".
-            videoQueueRef.set( $('#field-url').val(), function(error) {
-                if (error) {
-                    alert("Data could not be saved." + error);
-                } 
-                else {
-                    $( "#field-url" ).css( "border-color", "#43ac6a" );
-                    $( "#wrapper-bar" ).fadeOut( "slow" );
-                } 
-            });
-        });
+        // Update the IFRAME with the new SRC attribute.
+        $( "#iframe-video" ).attr( "src", src_url );
     });
     </script>
   </body>
