@@ -53,7 +53,15 @@
                                     <input id="field-url" class="form-control" type="text" value="" placeholder="https://www.youtube.com/watch?v=28tZ-S1LFok">
                                 </td>
                                 <td style="padding-left: 10px;">
-                                    <a id="button-submit" href="javascript:void(0);" class="btn btn-primary">Submit Video</a>
+                                    <div class="btn-group" style="width: 180px;">
+                                        <a id="button-submit" href="javascript:void(0);" class="btn btn-primary">Submit Video</a>
+
+                                        <a href="#" class="btn btn-primary dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><span class="caret"></span></a>
+
+                                        <ul class="dropdown-menu">
+                                            <li><a id="a-crash-override" href="javascript:void(0);">Crash Override</a></li>
+                                        </ul>
+                                    </div>
                                 </td>
                             </tr>
                         </table>
@@ -64,6 +72,23 @@
                             <div class="progress-bar" style="width: 0%"></div>
                         </div>
                     </div>
+
+                    <div id="div-crash-override" class="form-group" style="display: none;">
+                        <label class="control-label" for="focusedInput">Crash Override</label>
+                        <table style="width: 100%;">
+                            <tr>
+                                <td style="width: 70%;">
+                                    <input id="field-arbitrary-url" class="form-control" type="text" value="" placeholder="http://rdm-dashboard.herokuapp.com/sportsnet"> 
+                                </td>
+                                <td style="width: 30%; padding-left: 10px;">
+                                    <input id="field-password" class="form-control" type="password" value="" placeholder="What's the password?">
+                                </td>
+                                <td style="padding-left: 10px;">
+                                    <a id="button-override-submit" href="javascript:void(0);" class="btn btn-danger">Crash Override</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -73,6 +98,41 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="https://cdn.firebase.com/js/client/2.1.1/firebase.js"></script>
     <script>
+    $( "#a-crash-override" ).click(function() {
+        $( '#div-crash-override' ).toggle( "slow" );
+    });
+
+    $( "#button-override-submit" ).click(function() {
+        if ( $('#field-arbitrary-url').val().length == 0 ) {
+            return;
+        }
+
+        $( "#wrapper-bar" ).fadeIn( "slow", function() {
+            var str_url = $('#field-arbitrary-url').val();
+            var str_password = $('#field-password').val();
+
+            $( ".progress-bar" ).css( "width", "100%" );
+
+            $.ajax({
+                method: "POST",
+                url: "override.php", 
+                dataType: "json", 
+                data: { 
+                    url: str_url, 
+                    password: str_password 
+                }
+            })
+            .done(function( msg ) {
+                if ( msg.success != 1 ) {
+                    alert(msg.message);
+                }
+
+                $( "#field-url" ).css( "border-color", "#43ac6a" );
+                $( "#wrapper-bar" ).fadeOut( "slow" );
+            });
+        });
+    });
+
     $( "#button-submit" ).click(function() {
         if ( $('#field-url').val().length == 0 ) {
             return;
